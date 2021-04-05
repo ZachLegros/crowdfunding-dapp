@@ -1,0 +1,23 @@
+{
+  "name": "crowdfunding-dapp",
+  "version": "1.0.0",
+  "description": "An Instant ERC-20 Cryptocurrency Exchange",
+  "author": "gregory@dappuniversity.com",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZachLegros/crowdfunding-dapp.git"
+  },
+  "homepage": "https://github.com/ZachLegros/crowdfunding-dapp#readme",
+  "dependencies": {
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^3.0.0"
+  }
+}
