@@ -1,5 +1,7 @@
 const CrowdfundingFactory = artifacts.require("CrowdfundingFactory");
 const Crowdfunding = artifacts.require("Crowdfunding");
+let tryCatch = require("./exceptions.js").tryCatch;
+let errTypes = require("./exceptions.js").errTypes;
 
 contract("CrowdfundingFactory", async (accounts) => {
   const defaultMin = 100;
@@ -25,6 +27,7 @@ contract("CrowdfundingFactory", async (accounts) => {
     await factory.createCampaign(defaultMin);
     const deployedCampaigns = await factory.getDeployedCampaigns();
     const campaign = await Crowdfunding.at(deployedCampaigns[0]);
+
     const minimum = await campaign.minimumDonation();
     assert.equal(
       defaultMin,
@@ -37,7 +40,19 @@ contract("CrowdfundingFactory", async (accounts) => {
     await factory.createCampaign(defaultMin);
     const deployedCampaigns = await factory.getDeployedCampaigns();
     const campaign = await Crowdfunding.at(deployedCampaigns[0]);
+
     const donatorsCount = await campaign.donatorsCount();
     assert.equal(donatorsCount, 0, "The initial donators count is not 0");
+  });
+
+  it("cannot donate to own campaign", async () => {
+    await factory.createCampaign(defaultMin);
+    const deployedCampaigns = await factory.getDeployedCampaigns();
+    const campaign = await Crowdfunding.at(deployedCampaigns[0]);
+
+    await tryCatch(
+      campaign.donate({ from: accounts[0], value: 100 }),
+      errTypes.revert
+    );
   });
 });
