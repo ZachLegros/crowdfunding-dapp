@@ -1,10 +1,10 @@
-const CrowdfundingFactory = artifacts.require("CrowdfundingFactory");
-const Crowdfunding = artifacts.require("Crowdfunding");
 let tryCatch = require("./exceptions.js").tryCatch;
 let errTypes = require("./exceptions.js").errTypes;
+const CrowdfundingFactory = artifacts.require("CrowdfundingFactory");
+const Crowdfunding = artifacts.require("Crowdfunding");
 
 contract("CrowdfundingFactory", async (accounts) => {
-  const defaultMin = 100;
+  const defaultMin = 5000000000000000; // in wei
   let factory;
 
   before(async () => {
@@ -51,8 +51,25 @@ contract("CrowdfundingFactory", async (accounts) => {
     const campaign = await Crowdfunding.at(deployedCampaigns[0]);
 
     await tryCatch(
-      campaign.donate({ from: accounts[0], value: 100 }),
+      campaign.send(defaultMin, { from: accounts[0] }),
       errTypes.revert
     );
+  });
+
+  it("donate as non owner", async () => {
+    await factory.createCampaign(defaultMin);
+    const deployedCampaigns = await factory.getDeployedCampaigns();
+    const campaign = await Crowdfunding.at(deployedCampaigns[0]);
+
+    await campaign.send(defaultMin, { from: accounts[1] });
+    const balance = await web3.eth.getBalance(campaign.address);
+    const donatorsCount = await campaign.donatorsCount();
+
+    assert.equal(
+      balance,
+      defaultMin,
+      "The balance of the campaign did not update properly"
+    );
+    assert.equal(donatorsCount, 1, "The donators count was not incremented");
   });
 });
