@@ -31,7 +31,7 @@ contract Crowdfunding {
     minimumDonation = minimum;
   }
 
-  function donate() public payable {
+  fallback() external payable {
     require(msg.value >= minimumDonation, "Donation under minimum value");
     require(msg.sender != owner, "Cannot donate as a campaign owner ");
     donators[msg.sender] = true;
