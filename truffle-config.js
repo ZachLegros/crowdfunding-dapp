@@ -14,6 +14,10 @@ module.exports = {
   compilers: {
     solc: {
       version: "^0.8.0", // A version or constraint - Ex. "^0.5.0"
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
     },
   },
 };
