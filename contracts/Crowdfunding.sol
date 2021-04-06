@@ -43,7 +43,8 @@ contract Crowdfunding {
     _;
   }
 
-  function withdraw(uint value, address payable recipient) public onlyOwner {
+  function withdraw(uint value, address payable recipient) external onlyOwner {
+    require(address(this).balance >= value, "Contract balance smaller than withdrawal value");
     Withdrawal memory newWithdrawal = Withdrawal({ value: value, recipient: recipient });
     withdrawals.push(newWithdrawal);
     recipient.transfer(value);
